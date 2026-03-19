@@ -5,6 +5,9 @@ from time import sleep
 from datetime import datetime, time
 from zoneinfo import ZoneInfo
 
+from alpaca.trading.client import TradingClient
+from alpaca.trading.requests import MarketOrderRequest, LimitOrderRequest
+
 from py_vollib.black_scholes.implied_volatility import implied_volatility
 from py_vollib.black_scholes.greeks.analytical import delta
 
@@ -158,6 +161,7 @@ class API:
     def __init__(self, alpaca_pub_key, alpaca_sec_key):
         self.stock_api = StockAPI(alpaca_pub_key, alpaca_sec_key)
         self.option_api = OptionAPI(alpaca_pub_key, alpaca_sec_key)
+        self.trade_client = ZTradeClient(alpaca_pub_key, alpaca_sec_key)
     
     def test_keys(self):
         try:
@@ -165,6 +169,21 @@ class API:
             return True
         except requests.exceptions.JSONDecodeError:
             return False
+
+
+class ZTradeClient(AlpacaAPI):
+    def __init__(self, pub_key, sec_key):
+        super().__init__(pub_key, sec_key)
+        self._trade_client = TradingClient(api_key=ALPACA_PUBLIC_KEY, secret_key=ALPACA_SECRET_KEY, paper=True)
+    
+    def get_positions(self):
+        return self._trade_client.get_all_positions()
+
+    def market_sell(self, symbol, qty=1):
+        req = MarketOrderRequest(
+            symbol=symbol, qty=qty, side='sell', type='market', time_in_force='day'
+        )
+        self.trade_client.submit_order(req)
 
 
 class OptionAPI(AlpacaAPI):
