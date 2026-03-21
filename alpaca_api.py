@@ -283,17 +283,18 @@ class StockAPI(AlpacaAPI):
 
 if __name__ == "__main__":
     api = API(ALPACA_PUBLIC_KEY, ALPACA_SECRET_KEY)
+    r = api.trade_client.get_positions()
 
-    r = api.option_api.get_filtered_option_chain(
-        ticker="IONQ",
-        feed="indicative",
-        limit=300,
-        type="put",
-        # strike_price_gte=200,
-        strike_price_lte=32,
-        # expiration_date="2025-08-22"
-        expiration_date_lte="2026-03-20",
-        expiration_date_gte="2026-03-18",
-    )
-    pprint(r)
+    # r = api.option_api.get_filtered_option_chain(
+    #     ticker="IONQ",
+    #     feed="indicative",
+    #     limit=300,
+    #     type="put",
+    #     # strike_price_gte=200,
+    #     strike_price_lte=32,
+    #     # expiration_date="2025-08-22"
+    #     expiration_date_lte="2026-03-20",
+    #     expiration_date_gte="2026-03-18",
+    # )
+    pprint(type(r))
     
